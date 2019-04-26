@@ -86,6 +86,7 @@ class Ffmpeg < Formula
       --enable-libaom
       --enable-libsoxr
       --enable-libfdk-aac
+      --enable-nonfree
     ]
 
     system "./configure", *args
