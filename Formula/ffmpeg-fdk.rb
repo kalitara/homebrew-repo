@@ -3,18 +3,18 @@ class FfmpegFdk < Formula
   homepage "https://ffmpeg.org/"
   url "https://ffmpeg.org/releases/ffmpeg-4.2.2.tar.xz"
   sha256 "cb754255ab0ee2ea5f66f8850e1bd6ad5cac1cd855d0a2f4990fb8c668b0d29c"
+  revision 2
   head "https://github.com/FFmpeg/FFmpeg.git"
 
   bottle do
-    sha256 "3d436d5b28b674dd972e448fb4e6d7844075fbfa4266eb671eb72555d0294709" => :catalina
-    sha256 "94596bb3553a4d09107a5900064f5e0ccc01d8891888d184e67a0ac34d6f4f55" => :mojave
-    sha256 "c740004bfdaadc7adeda4cc79745fb3e0a3b2b52ba35f54664e06a351ce5104f" => :high_sierra
+    sha256 "34e8b4424611acc2f90e27b4e1318fc3972b036231a171faa4e017a9b98b9d1b" => :catalina
+    sha256 "80582f6eac8470182df842a072e074de3624ec3f5c091aa9151c178745a06011" => :mojave
+    sha256 "afb1c2a2c38fa4d39dbd178cf5258bc3b81e805196196d24ab3676f134914cab" => :high_sierra
   end
 
   depends_on "nasm" => :build
   depends_on "pkg-config" => :build
   depends_on "texi2html" => :build
-
   depends_on "aom"
   depends_on "fontconfig"
   depends_on "freetype"
@@ -37,19 +37,17 @@ class FfmpegFdk < Formula
   depends_on "speex"
   depends_on "tesseract"
   depends_on "theora"
+  depends_on "webp"
   depends_on "x264"
   depends_on "x265"
   depends_on "xvid"
   depends_on "xz"
   depends_on "fdk-aac"
 
-  conflicts_with "ffmpeg", :because => "this package provides ffmpeg with extra options"
+  uses_from_macos "bzip2"
+  uses_from_macos "zlib"
 
   def install
-    # Work around Xcode 11 clang bug
-    # https://bitbucket.org/multicoreware/x265/issues/514/wrong-code-generated-on-macos-1015
-    ENV.append_to_cflags "-fno-stack-check" if DevelopmentTools.clang_build_version >= 1010
-
     args = %W[
       --prefix=#{prefix}
       --enable-shared
@@ -73,6 +71,7 @@ class FfmpegFdk < Formula
       --enable-libvidstab
       --enable-libvorbis
       --enable-libvpx
+      --enable-libwebp
       --enable-libx264
       --enable-libx265
       --enable-libxvid
@@ -93,7 +92,7 @@ class FfmpegFdk < Formula
       --enable-libaom
       --enable-libfdk-aac
       --enable-nonfree
-    ]
+]
 
     system "./configure", *args
     system "make", "install"
