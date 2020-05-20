@@ -3,19 +3,20 @@ class FfmpegFdk < Formula
   homepage "https://ffmpeg.org/"
   url "https://ffmpeg.org/releases/ffmpeg-4.2.2.tar.xz"
   sha256 "cb754255ab0ee2ea5f66f8850e1bd6ad5cac1cd855d0a2f4990fb8c668b0d29c"
-  revision 2
+  revision 5
   head "https://github.com/FFmpeg/FFmpeg.git"
 
   bottle do
-    sha256 "34e8b4424611acc2f90e27b4e1318fc3972b036231a171faa4e017a9b98b9d1b" => :catalina
-    sha256 "80582f6eac8470182df842a072e074de3624ec3f5c091aa9151c178745a06011" => :mojave
-    sha256 "afb1c2a2c38fa4d39dbd178cf5258bc3b81e805196196d24ab3676f134914cab" => :high_sierra
+    sha256 "1dc595f883d51b4a66471587e433501c572d2a7e2ee76d09c6072b43db9f1bdd" => :catalina
+    sha256 "9959bf4032591ca53acb97bda383b61fbe7afb6bd216332e66f5133b2508356f" => :mojave
+    sha256 "ec288d5147dbeb6683ec4af04d378eee9a08969fbf9311a6fc0fd94e69f40185" => :high_sierra
   end
 
   depends_on "nasm" => :build
   depends_on "pkg-config" => :build
   depends_on "texi2html" => :build
   depends_on "aom"
+  depends_on "dav1d"
   depends_on "fontconfig"
   depends_on "freetype"
   depends_on "frei0r"
@@ -35,6 +36,7 @@ class FfmpegFdk < Formula
   depends_on "sdl2"
   depends_on "snappy"
   depends_on "speex"
+  depends_on "srt"
   depends_on "tesseract"
   depends_on "theora"
   depends_on "webp"
@@ -48,6 +50,10 @@ class FfmpegFdk < Formula
   uses_from_macos "zlib"
 
   def install
+    # Work around Xcode 11 clang bug
+    # https://bitbucket.org/multicoreware/x265/issues/514/wrong-code-generated-on-macos-1015
+    ENV.append_to_cflags "-fno-stack-check" if DevelopmentTools.clang_build_version >= 1010
+
     args = %W[
       --prefix=#{prefix}
       --enable-shared
@@ -62,10 +68,12 @@ class FfmpegFdk < Formula
       --enable-gpl
       --enable-libaom
       --enable-libbluray
+      --enable-libdav1d
       --enable-libmp3lame
       --enable-libopus
       --enable-librubberband
       --enable-libsnappy
+      --enable-libsrt
       --enable-libtesseract
       --enable-libtheora
       --enable-libvidstab
