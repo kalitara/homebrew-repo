@@ -1,15 +1,15 @@
 class FfmpegFdk < Formula
   desc "Play, record, convert, and stream audio and video"
   homepage "https://ffmpeg.org/"
-  url "https://ffmpeg.org/releases/ffmpeg-4.2.2.tar.xz"
-  sha256 "cb754255ab0ee2ea5f66f8850e1bd6ad5cac1cd855d0a2f4990fb8c668b0d29c"
-  revision 5
+  url "https://ffmpeg.org/releases/ffmpeg-4.3.tar.xz"
+  sha256 "1d0ad06484f44bcb97eba5e93c40bcb893890f9f64aeb43e46cd9bb4cbd6795d"
+  revision 1
   head "https://github.com/FFmpeg/FFmpeg.git"
 
   bottle do
-    sha256 "1dc595f883d51b4a66471587e433501c572d2a7e2ee76d09c6072b43db9f1bdd" => :catalina
-    sha256 "9959bf4032591ca53acb97bda383b61fbe7afb6bd216332e66f5133b2508356f" => :mojave
-    sha256 "ec288d5147dbeb6683ec4af04d378eee9a08969fbf9311a6fc0fd94e69f40185" => :high_sierra
+    sha256 "5dccea5f0d7ff92fc94e8564d8717f59766ee0db5b8df8a60996e27c57ef3dfc" => :catalina
+    sha256 "75b4d5c0639f24f4a49226e7d3d49be35f80ec3680a6d0fdd7d2da4544d366b2" => :mojave
+    sha256 "f4817a0d1cc8675d8785c13a5ea055ff296b241fb1d8a8a1eb301f6a075565b3" => :high_sierra
   end
 
   depends_on "nasm" => :build
@@ -31,6 +31,7 @@ class FfmpegFdk < Formula
   depends_on "opencore-amr"
   depends_on "openjpeg"
   depends_on "opus"
+  depends_on "rav1e"
   depends_on "rtmpdump"
   depends_on "rubberband"
   depends_on "sdl2"
@@ -50,10 +51,6 @@ class FfmpegFdk < Formula
   uses_from_macos "zlib"
 
   def install
-    # Work around Xcode 11 clang bug
-    # https://bitbucket.org/multicoreware/x265/issues/514/wrong-code-generated-on-macos-1015
-    ENV.append_to_cflags "-fno-stack-check" if DevelopmentTools.clang_build_version >= 1010
-
     args = %W[
       --prefix=#{prefix}
       --enable-shared
@@ -71,6 +68,7 @@ class FfmpegFdk < Formula
       --enable-libdav1d
       --enable-libmp3lame
       --enable-libopus
+      --enable-librav1e
       --enable-librubberband
       --enable-libsnappy
       --enable-libsrt
