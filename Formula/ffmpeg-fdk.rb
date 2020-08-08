@@ -1,15 +1,17 @@
 class FfmpegFdk < Formula
   desc "Play, record, convert, and stream audio and video"
   homepage "https://ffmpeg.org/"
-  url "https://ffmpeg.org/releases/ffmpeg-4.3.tar.xz"
-  sha256 "1d0ad06484f44bcb97eba5e93c40bcb893890f9f64aeb43e46cd9bb4cbd6795d"
-  revision 1
+  url "https://ffmpeg.org/releases/ffmpeg-4.3.1.tar.xz"
+  sha256 "ad009240d46e307b4e03a213a0f49c11b650e445b1f8be0dda2a9212b34d2ffb"
+  # None of these parts are used by default, you have to explicitly pass `--enable-gpl`
+  # to configure to activate them. In this case, FFmpeg's license changes to GPL v2+.
+  license "GPL-2.0"
   head "https://github.com/FFmpeg/FFmpeg.git"
 
   bottle do
-    sha256 "5dccea5f0d7ff92fc94e8564d8717f59766ee0db5b8df8a60996e27c57ef3dfc" => :catalina
-    sha256 "75b4d5c0639f24f4a49226e7d3d49be35f80ec3680a6d0fdd7d2da4544d366b2" => :mojave
-    sha256 "f4817a0d1cc8675d8785c13a5ea055ff296b241fb1d8a8a1eb301f6a075565b3" => :high_sierra
+    sha256 "45a432a330239f38a11c77a0decd32b44b80d77669ca73eff4ed93b257569a3a" => :catalina
+    sha256 "87d27a92d7d5ebfbdd3ada8f658d34c81a300352ce68d995e29b389ba773c49f" => :mojave
+    sha256 "9566b4ca9d24ab172295cb9a348af359e67b0620ef2e92ac579444549cf67870" => :high_sierra
   end
 
   depends_on "nasm" => :build
@@ -48,6 +50,7 @@ class FfmpegFdk < Formula
   depends_on "fdk-aac"
 
   uses_from_macos "bzip2"
+  uses_from_macos "libxml2"
   uses_from_macos "zlib"
 
   def install
@@ -80,6 +83,7 @@ class FfmpegFdk < Formula
       --enable-libwebp
       --enable-libx264
       --enable-libx265
+      --enable-libxml2
       --enable-libxvid
       --enable-lzma
       --enable-libfontconfig
@@ -108,7 +112,7 @@ class FfmpegFdk < Formula
     bin.install Dir["tools/*"].select { |f| File.executable? f }
 
     # Fix for Non-executables that were installed to bin/
-    mv bin/"python", pkgshare/"python", :force => true
+    mv bin/"python", pkgshare/"python", force: true
   end
 
   test do
